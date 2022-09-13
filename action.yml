@@ -11,5 +11,5 @@ inputs:
     description: 'What content to add to the bottom of the PR'
     required: false
 runs:
-  using: 'node18'
+  using: 'node16'
   main: 'dist/index.js'
