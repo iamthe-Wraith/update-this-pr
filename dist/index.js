@@ -9504,8 +9504,8 @@ const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token', { req
 // const top = core.getInput('top');
 // const bottom = core.getInput('bottom');
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
-const prNum = (_actions_github__WEBPACK_IMPORTED_MODULE_1___default().context.payload.pull_request.number);
-const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1___default().getOctokit(token);
+const prNum = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.number;
+const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
 const { data: pullRequest } = await octokit.rest.pulls.get({
     owner: repoOwner,
     repo: repoName,
