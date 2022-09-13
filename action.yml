@@ -1,0 +1,12 @@
+name: 'Update This PR'
+description: 'Automatically add content to the top and/or bottom of a pr description.'
+inputs:
+  top:  # content to add to the top of the pr
+    description: 'What content to add to the top of the PR'
+    required: false
+  bottom: # content to add to the bottom of the pr
+    description: 'What content to add to the bottom of the PR'
+    required: false
+runs:
+  using: 'node18'
+  main: 'dist/index.js'
