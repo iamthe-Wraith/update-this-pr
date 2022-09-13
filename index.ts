@@ -19,7 +19,7 @@ const { data: pullRequest } = await octokit.rest.pulls.get({
   repo: repoName,
   pull_number: prNum,
   mediaType: {
-    format: 'diff'
+    format: 'full'
   }
 });
 
