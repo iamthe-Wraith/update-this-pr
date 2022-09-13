@@ -9501,8 +9501,8 @@ __nccwpck_require__.r(__webpack_exports__);
 
 _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('myInput');
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token', { required: true });
-// const top = core.getInput('top');
-// const bottom = core.getInput('bottom');
+const top = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('top');
+const bottom = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('bottom');
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
 const prNum = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.number;
 const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
@@ -9514,13 +9514,18 @@ const { data: pullRequest } = await octokit.rest.pulls.get({
         format: 'full'
     }
 });
-console.log(pullRequest);
-// octokit.rest.pulls.update({
-//   owner: repoOwner,
-//   repo: repoName,
-//   pull_number: prNum,
-//   body: `${top}
-// })
+let body = '';
+if (top)
+    body += `${top}\n`;
+body += pullRequest.body;
+if (bottom)
+    body += `\n${bottom}`;
+octokit.rest.pulls.update({
+    owner: repoOwner,
+    repo: repoName,
+    pull_number: prNum,
+    body,
+});
 
 __webpack_handle_async_dependencies__();
 }, 1);

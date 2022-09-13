@@ -7,9 +7,11 @@ inputs:
   top:
     description: 'What content to add to the top of the PR'
     required: false
+    default: ""
   bottom:
     description: 'What content to add to the bottom of the PR'
     required: false
+    default: ""
 runs:
   using: 'node16'
   main: 'dist/index.js'

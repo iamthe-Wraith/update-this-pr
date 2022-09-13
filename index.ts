@@ -4,8 +4,8 @@ import * as github from '@actions/github';
 core.getInput('myInput');
 
 const token = core.getInput('token', { required: true });
-// const top = core.getInput('top');
-// const bottom = core.getInput('bottom');
+const top = core.getInput('top');
+const bottom = core.getInput('bottom');
 
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
 
@@ -23,11 +23,17 @@ const { data: pullRequest } = await octokit.rest.pulls.get({
   }
 });
 
-console.log(pullRequest);
+let body = '';
 
-// octokit.rest.pulls.update({
-//   owner: repoOwner,
-//   repo: repoName,
-//   pull_number: prNum,
-//   body: `${top}
-// })
+if (top) body += `${top}\n`;
+
+body += pullRequest.body;
+
+if (bottom) body += `\n${bottom}`;
+
+octokit.rest.pulls.update({
+  owner: repoOwner,
+  repo: repoName,
+  pull_number: prNum,
+  body,
+})
