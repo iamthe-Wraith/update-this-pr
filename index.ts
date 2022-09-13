@@ -1,7 +1,7 @@
-import core from '@actions/core';
+import * as core from '@actions/core';
 import github from '@actions/github';
 
-const token = core.getInput('token');
+const token = core.getInput('token', { required: true });
 // const top = core.getInput('top');
 // const bottom = core.getInput('bottom');
 
