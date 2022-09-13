@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "module": "es2022",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./dist",
+    "strict": true,
+    "strictNullChecks": false,
+    "target": "es2017",
+    "typeRoots": [
+      "./src/types",
+      "node_modules/@types",
+    ],
+  },
+  "exclude": ["node_modules", "src/__tests__"],
+  "include": ["index.ts", "src/**/*.ts"]
+}
