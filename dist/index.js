@@ -9499,16 +9499,17 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
 
 
-const token = _actions_core__WEBPACK_IMPORTED_MODULE_0___default().getInput('token');
+_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('myInput');
+const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token', { required: true });
 // const top = core.getInput('top');
 // const bottom = core.getInput('bottom');
-// const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
-// const prNum = github.context.payload.pull_request.number;
+const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
+const prNum = (_actions_github__WEBPACK_IMPORTED_MODULE_1___default().context.payload.pull_request.number);
 const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1___default().getOctokit(token);
 const { data: pullRequest } = await octokit.rest.pulls.get({
-    owner: 'octokit',
-    repo: 'rest.js',
-    pull_number: 123,
+    owner: repoOwner,
+    repo: repoName,
+    pull_number: prNum,
     mediaType: {
         format: 'diff'
     }
