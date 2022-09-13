@@ -9503,6 +9503,8 @@ _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('myInput');
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token', { required: true });
 const top = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('top');
 const bottom = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('bottom');
+const topFromBranch = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('top-from-branch');
+const bottomFromBranch = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('bottom-from-branch');
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
 const prNum = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.number;
 const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
@@ -9516,10 +9518,22 @@ const { data: pullRequest } = await octokit.rest.pulls.get({
 });
 let body = '';
 if (top)
-    body += `${top}\n`;
+    body += `${top}\n\n`;
+if (topFromBranch && !top) {
+    const branch = pullRequest.head.ref;
+    const match = new RegExp(topFromBranch, 'gmi').exec(branch);
+    if (match === null || match === void 0 ? void 0 : match.length)
+        body += `${match[0].toUpperCase()}\n\n`;
+}
 body += pullRequest.body;
 if (bottom)
-    body += `\n${bottom}`;
+    body += `\n\n${bottom}`;
+if (bottomFromBranch && !bottom) {
+    const branch = pullRequest.head.ref;
+    const match = new RegExp(bottomFromBranch, 'gmi').exec(branch);
+    if (match === null || match === void 0 ? void 0 : match.length)
+        body += `${match[0].toUpperCase()}\n\n`;
+}
 octokit.rest.pulls.update({
     owner: repoOwner,
     repo: repoName,
