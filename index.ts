@@ -65,14 +65,17 @@ const lines = pullRequest.body.split('\n');
 if (top) {
   const topStr = `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
   if (lines[0] !== topStr) body += topStr;
+  templateKeyRegex.lastIndex = 0;
 }
 
 body += pullRequest.body;
 
 if (bottom) {
-  console.log('bottom includes template: ', templateKeyRegex.test(bottom));
+  console.log('bottom includes template: ', bottom, templateKeyRegex.test(bottom));
+  templateKeyRegex.lastIndex = 0;
   const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
   if (lines[lines.length - 1] !== bottomStr) body += bottomStr;
+  templateKeyRegex.lastIndex = 0;
 }
 
 console.log('>>>>>>>>>>>');
