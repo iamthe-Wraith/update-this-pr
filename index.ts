@@ -50,7 +50,6 @@ const populateTemplate = (str: string) => {
   console.log('str', str);
   console.log('tmeplateKey', templateKey);
   console.log('fromBranchMatch', fromBranchMatch);
-  console.log('>>>>>>>>>>>');
 
   switch (templateKey) {
     case TemplateKeys.FromBranch:
@@ -71,9 +70,12 @@ if (top) {
 body += pullRequest.body;
 
 if (bottom) {
+  console.log('bottom includes template: ', templateKeyRegex.test(bottom));
   const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
   if (lines[lines.length - 1] !== bottomStr) body += bottomStr;
 }
+
+console.log('>>>>>>>>>>>');
 
 octokit.rest.pulls.update({
   owner: repoOwner,
