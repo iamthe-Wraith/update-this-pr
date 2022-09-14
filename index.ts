@@ -55,7 +55,7 @@ const populateTemplate = (str: string) => {
   }
 }
 
-const lines = pullRequest.body.split('\n');
+const lines = pullRequest.body.trim().split('\n');
 
 console.log('>>>>>>>>>>');
 console.log('lines', lines);

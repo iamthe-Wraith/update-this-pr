@@ -9545,7 +9545,7 @@ const populateTemplate = (str) => {
             throw new Error(`Invalid template key found: ${str}`);
     }
 };
-const lines = pullRequest.body.split('\n');
+const lines = pullRequest.body.trim().split('\n');
 console.log('>>>>>>>>>>');
 console.log('lines', lines);
 console.log('lines[0]', lines[0]);
