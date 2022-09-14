@@ -3,21 +3,21 @@ import * as github from '@actions/github';
 
 const templateKeyRegex = /\{\{[a-zA-Z]+}}/gmi;
 
-enum inputKeys {
+enum InputKeys {
   Token = 'token',
   Top = 'top',
   Bottom = 'bottom',
   FromBranch = 'from-branch',
 }
 
-enum templateKeys {
+enum TemplateKeys {
   FromBranch = 'from-branch',
 }
 
-const token = core.getInput(inputKeys.Token, { required: true });
-const top = core.getInput(inputKeys.Top);
-const bottom = core.getInput(inputKeys.Bottom);
-const fromBranch = core.getInput(inputKeys.FromBranch);
+const token = core.getInput(InputKeys.Token, { required: true });
+const top = core.getInput(InputKeys.Top);
+const bottom = core.getInput(InputKeys.Bottom);
+const fromBranch = core.getInput(InputKeys.FromBranch);
 
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
 
@@ -44,20 +44,36 @@ if (fromBranchMatch) {
 }
 
 const populateTemplate = (str: string) => {
-  const templateKey = Object.values(templateKeys).find((key) => str.includes(`{{${key}}}`));
-    switch (templateKey) {
-      case templateKeys.FromBranch:
-        return `${str.replace(`{{${templateKey}}}`, fromBranchMatch)}`;
-      default:
-        throw new Error(`Invalid template key found: ${str}`);
-    }
+  const templateKey = Object.values(TemplateKeys).find((key) => str.includes(`{{${key}}}`));
+
+  console.log('>>>>>>>>>>>');
+  console.log('str', str);
+  console.log('tmeplateKey', templateKey);
+  console.log('fromBranchMatch', fromBranchMatch);
+  console.log('>>>>>>>>>>>');
+
+  switch (templateKey) {
+    case TemplateKeys.FromBranch:
+      if (!fromBranchMatch) throw new Error('No match found for from-branch');
+      return `${str.replace(`{{${templateKey}}}`, fromBranchMatch)}`;
+    default:
+      throw new Error(`Invalid template key found: ${str}`);
+  }
 }
 
-if (top) body += `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
+const lines = pullRequest.body.split('\n');
+
+if (top) {
+  const topStr = `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
+  if (lines[0] !== topStr) body += topStr;
+}
 
 body += pullRequest.body;
 
-if (bottom) body += `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
+if (bottom) {
+  const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
+  if (lines[lines.length - 1] !== bottomStr) body += bottomStr;
+}
 
 octokit.rest.pulls.update({
   owner: repoOwner,

@@ -9500,21 +9500,21 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 const templateKeyRegex = /\{\{[a-zA-Z]+}}/gmi;
-var inputKeys;
-(function (inputKeys) {
-    inputKeys["Token"] = "token";
-    inputKeys["Top"] = "top";
-    inputKeys["Bottom"] = "bottom";
-    inputKeys["FromBranch"] = "from-branch";
-})(inputKeys || (inputKeys = {}));
-var templateKeys;
-(function (templateKeys) {
-    templateKeys["FromBranch"] = "from-branch";
-})(templateKeys || (templateKeys = {}));
-const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(inputKeys.Token, { required: true });
-const top = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(inputKeys.Top);
-const bottom = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(inputKeys.Bottom);
-const fromBranch = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(inputKeys.FromBranch);
+var InputKeys;
+(function (InputKeys) {
+    InputKeys["Token"] = "token";
+    InputKeys["Top"] = "top";
+    InputKeys["Bottom"] = "bottom";
+    InputKeys["FromBranch"] = "from-branch";
+})(InputKeys || (InputKeys = {}));
+var TemplateKeys;
+(function (TemplateKeys) {
+    TemplateKeys["FromBranch"] = "from-branch";
+})(TemplateKeys || (TemplateKeys = {}));
+const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(InputKeys.Token, { required: true });
+const top = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(InputKeys.Top);
+const bottom = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(InputKeys.Bottom);
+const fromBranch = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput(InputKeys.FromBranch);
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
 const prNum = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.number;
 const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
@@ -9535,19 +9535,33 @@ if (fromBranchMatch) {
         fromBranchMatch = match[0];
 }
 const populateTemplate = (str) => {
-    const templateKey = Object.values(templateKeys).find((key) => str.includes(`{{${key}}}`));
+    const templateKey = Object.values(TemplateKeys).find((key) => str.includes(`{{${key}}}`));
+    console.log('>>>>>>>>>>>');
+    console.log('str', str);
+    console.log('tmeplateKey', templateKey);
+    console.log('fromBranchMatch', fromBranchMatch);
+    console.log('>>>>>>>>>>>');
     switch (templateKey) {
-        case templateKeys.FromBranch:
+        case TemplateKeys.FromBranch:
+            if (!fromBranchMatch)
+                throw new Error('No match found for from-branch');
             return `${str.replace(`{{${templateKey}}}`, fromBranchMatch)}`;
         default:
             throw new Error(`Invalid template key found: ${str}`);
     }
 };
-if (top)
-    body += `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
+const lines = pullRequest.body.split('\n');
+if (top) {
+    const topStr = `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
+    if (lines[0] !== topStr)
+        body += topStr;
+}
 body += pullRequest.body;
-if (bottom)
-    body += `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
+if (bottom) {
+    const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
+    if (lines[lines.length - 1] !== bottomStr)
+        body += bottomStr;
+}
 octokit.rest.pulls.update({
     owner: repoOwner,
     repo: repoName,
