@@ -37,7 +37,7 @@ const { data: pullRequest } = await octokit.rest.pulls.get({
 let body = '';
 let fromBranchMatch = '';
 
-if (fromBranchMatch) {
+if (fromBranch) {
   const branch = pullRequest.head.ref;
   const match = new RegExp(fromBranch, 'gmi').exec(branch);
   if (match?.length) fromBranchMatch = match[0];
