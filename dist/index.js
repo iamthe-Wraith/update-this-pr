@@ -9499,7 +9499,7 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
 
 
-const templateKeyRegex = /\{\{[a-zA-Z]+}}/gmi;
+const templateKeyRegex = /\{\{[a-zA-Z0-9-_]+}}/gmi;
 var InputKeys;
 (function (InputKeys) {
     InputKeys["Token"] = "token";
@@ -9536,10 +9536,6 @@ if (fromBranch) {
 }
 const populateTemplate = (str) => {
     const templateKey = Object.values(TemplateKeys).find((key) => str.includes(`{{${key}}}`));
-    console.log('>>>>>>>>>>>');
-    console.log('str', str);
-    console.log('tmeplateKey', templateKey);
-    console.log('fromBranchMatch', fromBranchMatch);
     switch (templateKey) {
         case TemplateKeys.FromBranch:
             if (!fromBranchMatch)
@@ -9558,14 +9554,12 @@ if (top) {
 }
 body += pullRequest.body;
 if (bottom) {
-    console.log('bottom includes template: ', bottom, templateKeyRegex.test(bottom));
     templateKeyRegex.lastIndex = 0;
     const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
     if (lines[lines.length - 1] !== bottomStr)
         body += bottomStr;
     templateKeyRegex.lastIndex = 0;
 }
-console.log('>>>>>>>>>>>');
 octokit.rest.pulls.update({
     owner: repoOwner,
     repo: repoName,
