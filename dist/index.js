@@ -9549,7 +9549,7 @@ const populateTemplate = (str) => {
             throw new Error(`Invalid template key found: ${str}`);
     }
 };
-const lines = pullRequest.body.trim().split('\n');
+const lines = (pullRequest.body || '').trim().split('\n');
 if (top) {
     const topStr = templateKeyRegex.test(top) ? populateTemplate(top) : top;
     if (!!topStr && lines[0] !== topStr)

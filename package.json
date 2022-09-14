@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "ncc build index.ts --license licenses.txt"
+  },
   "devDependencies": {
     "@types/node": "18.7.17",
     "@typescript-eslint/eslint-plugin": "5.37.0",

@@ -60,7 +60,7 @@ const populateTemplate = (str: string) => {
   }
 }
 
-const lines = pullRequest.body.trim().split('\n');
+const lines = (pullRequest.body || '').trim().split('\n');
 
 if (top) {
   const topStr = templateKeyRegex.test(top) ? populateTemplate(top) : top;
