@@ -60,7 +60,7 @@ const populateTemplate = (str: string) => {
   }
 }
 
-const lines = pullRequest.body.trim().split('\n');
+const lines = (pullRequest.body || '').trim().split('\n');
 
 if (top) {
   const topStr = templateKeyRegex.test(top) ? populateTemplate(top) : top;
@@ -68,12 +68,12 @@ if (top) {
   templateKeyRegex.lastIndex = 0;
 }
 
-body += pullRequest.body;
+body += pullRequest.body || '';
 
 if (bottom) {
   templateKeyRegex.lastIndex = 0;
   const bottomStr = templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom;
-  if (!!bottomStr && lines[lines.length - 1] !== bottomStr) body += `\n\n${bottomStr}`; // only add the bottom if it's not already there
+  if (!!bottomStr && lines[lines.length - 1] !== bottomStr) body += `${body.length ? '\n\n' : ''}${bottomStr}`; // only add the bottom if it's not already there
   templateKeyRegex.lastIndex = 0;
 }
 
