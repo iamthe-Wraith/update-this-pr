@@ -1,20 +1,29 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
-core.getInput('myInput');
+const templateKeyRegex = /\{\{[a-zA-Z]+}}/gmi;
 
-const token = core.getInput('token', { required: true });
-const top = core.getInput('top');
-const bottom = core.getInput('bottom');
-const topFromBranch = core.getInput('top-from-branch');
-const bottomFromBranch = core.getInput('bottom-from-branch');
+enum inputKeys {
+  Token = 'token',
+  Top = 'top',
+  Bottom = 'bottom',
+  FromBranch = 'from-branch',
+}
+
+enum templateKeys {
+  FromBranch = 'from-branch',
+}
+
+const token = core.getInput(inputKeys.Token, { required: true });
+const top = core.getInput(inputKeys.Top);
+const bottom = core.getInput(inputKeys.Bottom);
+const fromBranch = core.getInput(inputKeys.FromBranch);
 
 const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
 
 const prNum = github.context.payload.pull_request.number;
 
 const octokit = github.getOctokit(token);
-
 
 const { data: pullRequest } = await octokit.rest.pulls.get({
   owner: repoOwner,
@@ -26,22 +35,29 @@ const { data: pullRequest } = await octokit.rest.pulls.get({
 });
 
 let body = '';
+let fromBranchMatch = '';
 
-if (top) body += `${top}\n\n`;
-if (topFromBranch && !top) {
+if (fromBranchMatch) {
   const branch = pullRequest.head.ref;
-  const match = new RegExp(topFromBranch, 'gmi').exec(branch);
-  if (match?.length) body += `${match[0].toUpperCase()}\n\n`;
+  const match = new RegExp(fromBranch, 'gmi').exec(branch);
+  if (match?.length) fromBranchMatch = match[0];
 }
+
+const populateTemplate = (str: string) => {
+  const templateKey = Object.values(templateKeys).find((key) => str.includes(`{{${key}}}`));
+    switch (templateKey) {
+      case templateKeys.FromBranch:
+        return `${str.replace(`{{${templateKey}}}`, fromBranchMatch)}`;
+      default:
+        throw new Error(`Invalid template key found: ${str}`);
+    }
+}
+
+if (top) body += `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
 
 body += pullRequest.body;
 
-if (bottom) body += `\n\n${bottom}`;
-if (bottomFromBranch && !bottom) {
-  const branch = pullRequest.head.ref;
-  const match = new RegExp(bottomFromBranch, 'gmi').exec(branch);
-  if (match?.length) body += `${match[0].toUpperCase()}\n\n`;
-}
+if (bottom) body += `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
 
 octokit.rest.pulls.update({
   owner: repoOwner,

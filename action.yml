@@ -12,12 +12,8 @@ inputs:
     description: 'What content to add to the bottom of the PR'
     required: false
     default: ""
-  top-from-branch:
-    description: 'What regex to find in branch name and add to top of the PR'
-    required: false
-    default: ""
-  bottom-from-branch:
-    description: 'What regex to find in branch name and add to bottom of the PR'
+  from-branch:
+    description: 'What regex to find in the branch name and add to top of the PR'
     required: false
     default: ""
 runs:
