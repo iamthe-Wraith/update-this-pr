@@ -64,8 +64,8 @@ console.log('lines[lines.length - 1]', lines[lines.length - 1]);
 console.log('>>>>>>>>>>');
 
 if (top) {
-  const topStr = `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
-  if (lines[0] !== topStr) body += topStr;
+  const topStr = templateKeyRegex.test(top) ? populateTemplate(top) : top;
+  if (lines[0] !== topStr) body += `${topStr}\n\n`;
   templateKeyRegex.lastIndex = 0;
 }
 
@@ -73,8 +73,8 @@ body += pullRequest.body;
 
 if (bottom) {
   templateKeyRegex.lastIndex = 0;
-  const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
-  if (lines[lines.length - 1] !== bottomStr) body += bottomStr;
+  const bottomStr = templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom;
+  if (lines[lines.length - 1] !== bottomStr) body += `\n\n${bottomStr}`;
   templateKeyRegex.lastIndex = 0;
 }
 

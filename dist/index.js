@@ -9552,17 +9552,17 @@ console.log('lines[0]', lines[0]);
 console.log('lines[lines.length - 1]', lines[lines.length - 1]);
 console.log('>>>>>>>>>>');
 if (top) {
-    const topStr = `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
+    const topStr = templateKeyRegex.test(top) ? populateTemplate(top) : top;
     if (lines[0] !== topStr)
-        body += topStr;
+        body += `${topStr}\n\n`;
     templateKeyRegex.lastIndex = 0;
 }
 body += pullRequest.body;
 if (bottom) {
     templateKeyRegex.lastIndex = 0;
-    const bottomStr = `\n\n${templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom}\n\n`;
+    const bottomStr = templateKeyRegex.test(bottom) ? populateTemplate(bottom) : bottom;
     if (lines[lines.length - 1] !== bottomStr)
-        body += bottomStr;
+        body += `\n\n${bottomStr}`;
     templateKeyRegex.lastIndex = 0;
 }
 octokit.rest.pulls.update({
