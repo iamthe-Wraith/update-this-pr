@@ -9546,6 +9546,11 @@ const populateTemplate = (str) => {
     }
 };
 const lines = pullRequest.body.split('\n');
+console.log('>>>>>>>>>>');
+console.log('lines', lines);
+console.log('lines[0]', lines[0]);
+console.log('lines[lines.length - 1]', lines[lines.length - 1]);
+console.log('>>>>>>>>>>');
 if (top) {
     const topStr = `${templateKeyRegex.test(top) ? populateTemplate(top) : top}\n\n`;
     if (lines[0] !== topStr)
